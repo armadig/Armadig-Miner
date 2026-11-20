@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Armadig - GPU miner</title>
+<meta name="description" content="Armadig is a GPU miner for Pearl (PRL) and Quantus (QTC) with automatic coin switching and power-aware profit mode.">
+<meta property="og:title" content="Armadig - GPU miner">
+<meta property="og:description" content="GPU miner for Pearl and Quantus. One window, many cards, honest 0.75% dev fee.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico">
+<style>
+:root{--bg:#0A0C10;--panel:#14171C;--line:#2B313A;--text:#EEF1F5;--dim:#9AA3B0;--green:#34C27A;--a:#FFD45C;--b:#E8471C}
+@media (prefers-color-scheme:light){:root{--bg:#F6F7F9;--panel:#fff;--line:#D9DEE5;--text:#14171C;--dim:#5B6572;--green:#1E9E5A}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:0 16px 64px}
+header{text-align:center;padding:56px 0 32px}
+header img{width:128px;height:128px;border-radius:28px}
+h1{margin:16px 0 4px;font-size:44px;letter-spacing:-.5px}
+h1 span{background:linear-gradient(180deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{color:var(--dim);font-size:18px;margin:0 0 24px}
+.btn{display:inline-block;padding:12px 24px;border-radius:10px;font-weight:600;text-decoration:none;margin:4px}
+.primary{background:linear-gradient(180deg,var(--a),var(--b));color:#14171C}
+.ghost{border:1px solid var(--line);color:var(--text)}
+h2{margin:48px 0 12px;font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card b{display:block;margin-bottom:4px}
+.card p{margin:0;color:var(--dim);font-size:15px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:15px}
+tr:last-child td{border-bottom:0}
+th{color:var(--dim);font-weight:600}
+code{font:14px Consolas,"DejaVu Sans Mono",monospace;color:var(--green)}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto;margin:0}
+footer{margin-top:56px;color:var(--dim);font-size:14px;text-align:center}
+a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+<header>
+<img src="armadig-512.png" alt="Armadig">
+<h1>arma<span>dig</span></h1>
+<p class="tag">GPU miner</p>
+<a class="btn primary" href="https://github.com/armadig/Armadig-Miner/releases">Download</a>
+<a class="btn ghost" href="https://github.com/armadig">GitHub</a>
+<a class="btn ghost" href="https://t.me/armadigminer">Telegram</a>
+</header>
+
+<h2>What it does</h2>
+<div class="grid">
+<div class="card"><b>Pearl and Quantus</b><p>Mines PRL and QTC. Pass two wallets on the command line and it works out which is which.</p></div>
+<div class="card"><b>One window, all cards</b><p>One process runs every GPU in the rig, each card on the coin that pays it best.</p></div>
+<div class="card"><b>Profit mode</b><p>Enter your electricity tariff and currency. The miner picks the most profitable power limit for each tariff zone.</p></div>
+<div class="card"><b>Tuned per card</b><p>A one-time per-card tune on first start, cached for later runs.</p></div>
+</div>
+
+<h2>Start</h2>
+<pre><code>armadig  &lt;pearl-wallet&gt;  &lt;quantus-wallet&gt;</code></pre>
+
+<h2>Fee</h2>
+<table>
+<tr><th>Coin</th><th>Dev fee</th></tr>
+<tr><td>Pearl (PRL)</td><td>0.75 %</td></tr>
+<tr><td>Quantus (QTC)</td><td>0.75 %</td></tr>
+</table>
+<p style="color:var(--dim);font-size:15px">The fee is work-based, written into the build, and shown in the start banner. It does not slow the mining down.</p>
+
+<footer>
+<p>Armadig is closed-source freeware. Downloads and release notes are on <a href="https://github.com/armadig">GitHub</a>.</p>
+<p>Contact: <a href="mailto:contact@armadig.com">contact@armadig.com</a></p>
+</footer>
+</main>
+</body>
+</html>
