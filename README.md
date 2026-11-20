@@ -9,4 +9,4 @@ GPU miner for **Pearl (PRL)** and **Quantus (QTC)**. Closed-source freeware, 0.7
 - Profit mode: tariff + currency in a config file, best power limit per tariff zone
 - One-time per-card tune, cached
 
-Downloads: see **Releases**. Site: https://armadig.com. Telegram: https://t.me/armadigminer
+Downloads: see **Releases**. Site: https://armadig.com. Telegram: https://t.me/Armadig_Miner
