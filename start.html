@@ -25,11 +25,11 @@ sha256sum -c SHA256SUMS.txt                               (Linux)</code></pre>
 <p><b>Simplest:</b> your two payout addresses, nothing else (Pearl and QTC, either order; one address mines that coin only). The miner picks the fastest approved pool for each coin and the better-paying coin for each card.</p>
 <pre><code>armadig-miner.exe YOUR_PEARL_WALLET YOUR_QTC_WALLET</code></pre>
 <p><b>One coin, your own pool:</b></p>
-<pre><code>armadig-miner.exe mine --algo pearl --pool POOL_HOST:PORT --wallet YOUR_PEARL_WALLET --worker w1
-armadig-miner.exe mine --algo qtc   --pool POOL_HOST:PORT --wallet YOUR_QTC_WALLET   --worker w1</code></pre>
+<pre><code>armadig-miner.exe mine --algo pearl --pool POOL_HOST:PORT --wallet YOUR_PEARL_WALLET --worker WORKER
+armadig-miner.exe mine --algo qtc   --pool POOL_HOST:PORT --wallet YOUR_QTC_WALLET   --worker WORKER</code></pre>
 <p><b>Both coins with your own pools:</b></p>
 <pre><code>armadig-miner.exe mine --pearl-pool POOL_HOST:PORT --pearl-wallet YOUR_PEARL_WALLET ^
-  --qtc-pool POOL_HOST:PORT --qtc-wallet YOUR_QTC_WALLET --worker w1</code></pre>
+  --qtc-pool POOL_HOST:PORT --qtc-wallet YOUR_QTC_WALLET --worker WORKER</code></pre>
 <p>Only some cards: add <code>--gpu 0</code> or <code>--gpu 0,2</code> (indexes from <code>--list</code>). Keep the worker name neutral (<code>w1</code>, <code>w2</code>): pools show it publicly.</p>
 <div class="note"><b>No wallet?</b> Started with no valid wallet anywhere, the miner runs <b>test mining for the developer</b>: all work goes to the developer, a red warning says so at the start and every 60 s. Any valid wallet turns it off at once.</div>
 <h2>5. The first run tunes each card</h2>
