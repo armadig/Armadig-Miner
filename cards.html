@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supported cards - Armadig</title><meta name="description" content="Supported NVIDIA and AMD cards for Pearl and Quantus, with measured rates.">
+<meta property="og:title" content="Supported cards - Armadig"><meta property="og:description" content="Supported NVIDIA and AMD cards for Pearl and Quantus, with measured rates.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l" href="profit.html">Profit mode</a><a class="l" href="tuning.html">Tuning</a><a class="l" href="options.html">Options</a><a class="l" href="config.html">Config file</a><a class="l on" href="cards.html">Cards</a><a class="l" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>Supported cards and measured rates</h1>
+<p class="lead">NVIDIA from Turing to Blackwell, AMD RDNA2 to RDNA4. All GPU code is built into the program: you need only the normal graphics driver.</p>
+<p><code>armadig-miner --list</code> shows what would run on each of your cards. A card that is not supported is refused with a line that names the reason; the miner never silently runs a wrong kernel.</p>
+<h2>Pearl</h2>
+<div class="scroll"><table><tr><th>Family</th><th>Cards</th><th>Status</th></tr>
+<tr><td>NVIDIA Turing (tensor cores)</td><td>RTX 20xx, RTX 2060 12 GB, RTX 2060 SUPER</td><td>supported</td></tr>
+<tr><td>NVIDIA Turing (no tensor cores)</td><td>GTX 1660 SUPER, 1650, 1660, 1650 SUPER</td><td>supported, opt-in (<code>--algo pearl</code>)</td></tr>
+<tr><td>NVIDIA Turing mining card</td><td>CMP 30HX</td><td>supported, low rate</td></tr>
+<tr><td>NVIDIA Ampere</td><td>RTX 30xx, RTX A4000</td><td>supported</td></tr>
+<tr><td>NVIDIA Ampere mining card</td><td>CMP 90HX</td><td>only with an unlocked driver (probed at start)</td></tr>
+<tr><td>NVIDIA Ada / Blackwell</td><td>RTX 40xx / RTX 50xx</td><td>supported</td></tr>
+<tr><td>AMD RDNA4</td><td>RX 9070 / 9070 XT</td><td>supported (Linux, Windows)</td></tr>
+<tr><td>AMD RDNA3</td><td>RX 7800 XT</td><td>supported (Linux; Windows not yet run)</td></tr>
+<tr><td>AMD RDNA2</td><td>RX 6700 XT</td><td>supported (Windows; Linux not yet run)</td></tr></table></div>
+<h2>Quantus (QTC)</h2>
+<div class="scroll"><table><tr><th>Family</th><th>Cards</th><th>Status</th></tr>
+<tr><td>NVIDIA Pascal</td><td>P104-100</td><td>supported</td></tr>
+<tr><td>NVIDIA Turing</td><td>GTX 1660 SUPER, RTX 2060 SUPER, CMP 30HX, CMP 90HX</td><td>supported</td></tr>
+<tr><td>NVIDIA Ampere</td><td>RTX 3060, RTX A4000 and other sm_86 cards</td><td>supported</td></tr>
+<tr><td>NVIDIA Ada / Blackwell</td><td>RTX 40xx / RTX 50xx</td><td>supported</td></tr>
+<tr><td>AMD RDNA4</td><td>RX 9070 / 9070 XT</td><td>supported (Linux, Windows)</td></tr>
+<tr><td>AMD RDNA3</td><td>RX 7800 XT</td><td>supported (Linux; Windows not yet run)</td></tr>
+<tr><td>AMD RDNA2</td><td>RX 6700 XT</td><td>supported (Linux, Windows)</td></tr></table></div>
+<p>Cards of a supported family that we have not measured start from a generic point, and <a href="tuning.html">auto-tune</a> then finds the card's own best settings. For the models we measured the program carries a tested starting point.</p>
+<div class="note"><b>CMP 90HX:</b> at start the miner measures the card's int8 tensor rate. An unlocked card mines Pearl; a locked card is refused for Pearl with a line that names the measured rate, and can still mine QTC.</div>
+<h2>Measured rates</h2>
+<p>Our own measurements on our own cards, with auto-tune on. These are compute rates (work finished divided by wall time), before the dev fee. Rates move with silicon, cooling, power limit and pool conditions; your card can be faster or slower.</p>
+<div class="scroll"><table><tr><th>Card</th><th>Pearl</th><th>QTC</th></tr>
+<tr><td>RTX 2060 SUPER</td><td>50.36 TH/s</td><td>236.37 MH/s</td></tr>
+<tr><td>RTX 3060</td><td>53.33 TH/s</td><td>232.45 MH/s</td></tr>
+<tr><td>RTX 4060 Ti</td><td>98.11 TH/s</td><td>418.35 MH/s</td></tr>
+<tr><td>RTX 5060 Ti</td><td>107.47 TH/s</td><td>460.84 MH/s</td></tr>
+<tr><td>RTX A4000</td><td>66.53 TH/s</td><td>309.7 MH/s</td></tr>
+<tr><td>CMP 90HX</td><td>82.46 TH/s</td><td>374.35 MH/s</td></tr>
+<tr><td>CMP 30HX</td><td>-</td><td>173.31 MH/s</td></tr>
+<tr><td>GTX 1660 SUPER</td><td>8.50 TH/s</td><td>158.16 MH/s</td></tr>
+<tr><td>RX 6700 XT</td><td>-</td><td>193.05 MH/s</td></tr>
+<tr><td>RX 7800 XT</td><td>33.94 TH/s</td><td>270.13 MH/s</td></tr>
+<tr><td>RX 9070 / 9070 XT</td><td>95.63 TH/s</td><td>247.50 MH/s</td></tr></table></div>
+<p class="cap">The pool credits a few percent less than the compute rate: see <a href="faq.html#pool-less">why the pool shows less</a>.</p>
+<div class="pn"><a href="config.html">&larr; Config file</a><a href="faq.html">Next: FAQ &rarr;</a></div>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>

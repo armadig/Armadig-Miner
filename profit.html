@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profit mode - Armadig</title><meta name="description" content="Electricity tariff, power supply and the most profitable power limit per tariff zone.">
+<meta property="og:title" content="Profit mode - Armadig"><meta property="og:description" content="Electricity tariff, power supply and the most profitable power limit per tariff zone.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l on" href="profit.html">Profit mode</a><a class="l" href="tuning.html">Tuning</a><a class="l" href="options.html">Options</a><a class="l" href="config.html">Config file</a><a class="l" href="cards.html">Cards</a><a class="l" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>Profit mode</h1>
+<p class="lead">Tell the miner what electricity costs. It shows cost and profit per card and picks the most profitable power limit.</p>
+<h2>Set your tariff</h2>
+<p>In <code>armadig.conf</code>, one setting per line:</p>
+<pre><code>wallet = YOUR_PEARL_WALLET, YOUR_QTC_WALLET
+tariff = 23-7 4.33, 7-23 9.63 rub
+psu = gold, 1200w
+power = auto</code></pre>
+<ul>
+<li><code>tariff</code>: up to <b>three zones</b> in the computer's local time, with the price per kWh. The currency goes anywhere on the line (<code>usd</code>, <code>eur</code>, <code>rub</code>, ...). <code>23-7</code> crosses midnight. One price with no hours is the whole day. Example for Germany: <code>tariff = 23-7 0.30, 7-23 0.38 eur</code>.</li>
+<li>The price is <b>static</b>, exactly as you wrote it. Only the exchange rate of your currency is checked live (several public sources, median).</li>
+<li><code>psu</code>: power supply class (<code>bronze silver gold platinum titanium</code>) and rated watts, any order; or an efficiency such as <code>92%</code>.</li>
+<li><code>power</code>: <code>auto</code> (the limit that earns the most in each zone, default), <code>efficiency</code> (most hashes per wall watt), <code>off</code>, <code>redo</code>, or one limit such as <code>80%</code> or <code>150w</code>.</li>
+<li><code>power_max_loss = 10%</code>: safety rail, 0 to 50. It never picks a limit that lowers a card's hashrate by more than this. It is not a money threshold.</li></ul>
+<p>Prefer no file? The same on the command line, for example in a flight sheet:</p>
+<pre><code>armadig-miner PEARL_ADDRESS QTC_ADDRESS platinum,1200w 6.50 rub 23-07 9.65 rub 07-23</code></pre>
+<p>That is a Platinum 1200 W supply and two zones in roubles: 6.50 per kWh from 23:00 to 07:00, 9.65 from 07:00 to 23:00. See the <a href="options.html#oneline">one-line form</a>.</p>
+<h2>Wall power without a meter</h2>
+<p>The miner estimates the rig's power at the wall itself: per card, the GPU power reading times its sensor factor, plus 30 W for the rest of the rig, divided by the PSU efficiency. The factor is 1.00 for NVIDIA and RX 9000, 1.20 for RX 7000 and 1.33 for RX 6000. You need no wattmeter. If you own one, <code>wattmeter = 346w@299w</code> (wall reading @ the GPU power sum the miner shows) fits the estimate to your rig.</p>
+<h2>What the window shows</h2>
+<div class="term"><div class="bar"><i></i><i></i><i></i>armadig-miner - profit mode, power search active</div><pre><span class="y">Armadig Miner</span>  Pearl POOL_HOST:PORT
+02:14:05 ===== === up 38m  user effort 97% ====================================
+  #  MODEL       coin      hashrate   A+R+S     C     W/wall  rev/day  prof/day
+  -----------------------------------------------------------------------------
+  0  RTX 4060Ti  Pearl  101.37 TH/s  38+0+1   61C  163W/249W    $3.24     $2.81
+  1  RTX 5060Ti  Pearl  106.21 TH/s  38+0+1   61C  167W/249W    $3.24     $2.81
+     sum         Pearl  207.58 TH/s                330W/498W    $6.48     $5.62
+      pool 204.58 TH/s   PL 90-100%   fan 48%
+      <span class="g">PROFIT MODE  day 9.63 RUB/kWh  gpu1 PL 90% -10%
+      hashrate -1.7%, cost -$0.09/day, profit +$0.03/day</span>
+===== === 15m 207.3  DEV realised 0.760%  dev shares 4  dev effort 95% ========</pre></div><p class="cap">Console view. The numbers are illustrative, your rig will show its own.</p>
+<p>Money is net of the dev fee, the pool fee, rejected and stale shares and the selling cost, in USD(T). A card that costs more than it earns is shown <code>unprofitable</code>; the miner does not stop it. On a window of 120 or more columns, key <code>P</code> prints a card's power profile (per tariff zone: limit, card and wall power, hashrate, revenue, cost and profit per day).</p>
+<h2>The power-limit search</h2>
+<ol><li>Each card first mines 5 minutes at its start limit (the baseline).</li>
+<li>Then it measures rate and power at a few limits once: 100, 90, 80, 70, 60 % of the factory limit and points around the best, about 6 minutes, mining all the time.</li>
+<li>For each tariff zone it sets the limit with the highest profit after electricity, then checks the choice by measurement in 5 % steps.</li>
+<li>The curve is stored in <code>armadig_power.txt</code> next to the program and reused. A driver, kernel or program change, a live rate more than 3 % off the curve, or a week, measures it again (<code>--power-search redo</code> does it now).</li></ol>
+<div class="note"><b>Safe by design.</b> It writes only the <b>power limit</b>: never core or memory clocks, voltage, offsets or fans. It only goes <b>down</b> from the limit the card had at start, never below the driver minimum. The original limit is restored at exit, Ctrl+C or a closed window, and after a crash at the next start. It needs administrator (Windows) or root (Linux).</div>
+<h2>Switch it off</h2>
+<pre><code>--power-search off        no automatic power limit
+--power-limit 80          one fixed limit for every card (80 % of factory), or 150W
+--fixed                   everything automatic off (no coin switching, no power search, no market requests)</code></pre>
+<p>Use <code>--fixed</code> whenever you measure or compare hashrates.</p>
+<div class="pn"><a href="coins.html">&larr; Coins &amp; cards</a><a href="tuning.html">Next: Tuning &rarr;</a></div>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>

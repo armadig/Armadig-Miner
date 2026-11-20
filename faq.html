@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ - Armadig</title><meta name="description" content="Dev fee, pool failover, why the pool shows less, troubleshooting and reporting a problem.">
+<meta property="og:title" content="FAQ - Armadig"><meta property="og:description" content="Dev fee, pool failover, why the pool shows less, troubleshooting and reporting a problem.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l" href="profit.html">Profit mode</a><a class="l" href="tuning.html">Tuning</a><a class="l" href="options.html">Options</a><a class="l" href="config.html">Config file</a><a class="l" href="cards.html">Cards</a><a class="l on" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>FAQ and troubleshooting</h1>
+<p class="lead">If the answer is not here, ask in <a href="https://t.me/armadigminer">Telegram</a> or open an issue on <a href="https://github.com/armadig/Armadig-Miner">GitHub</a>.</p>
+<h2 id="fee">The dev fee</h2>
+<p><b>0.75 % of the work your GPUs compute</b> goes to the developer on each coin. Not 0.75 % of time or of accepted shares: of computed work. One small dev package runs at start, then a new one whenever the dev share would fall below 0.75 %, about one dev package per 132 of yours. The console's DEV line shows the realised percentage. Switching between your job and the dev job is designed to add no measurable loss.</p>
+<ul><li>Dev work goes only to approved public pools, over TLS. If one is down the miner tries the next. The dev pool address is never printed.</li>
+<li><b>No debt, no fail-open.</b> Your mining pauses <i>only</i> when no approved dev pool at all can be reached, usually a firewall, DNS filter, VPN or hosts file blocking pool domains. It resumes by itself when any answers.</li>
+<li>There is no option to change the fee and no <code>--dev-pool</code> option. The license does not allow removing or bypassing it.</li></ul>
+<h2 id="pool-less">Why the pool shows less than the compute rate</h2>
+<p>The top bar shows what your cards <b>compute</b>; the pool pays for <b>accepted shares</b>. Over time the pool number is a few percent lower, over short periods far lower or higher:</p>
+<ul><li><b>Share luck.</b> The pool sees only found shares, with a relative error of about 1/&radic;N. A few hundred shares can read several percent off with nothing wrong. Wait for thousands.</li>
+<li><b>Job changes.</b> Work on the GPU for a replaced job can no longer earn.</li>
+<li><b>Latency.</b> Costs more on QTC (shorter jobs). Choose the nearest pool region; check <code>pool NN ms</code> on the bottom bar.</li>
+<li><b>Rejected and stale shares.</b> They earn nothing. A healthy rig has both near 0 %.</li>
+<li><b>The dev fee</b>, 0.75 %.</li></ul>
+<p>Compare with the miner's own <code>pool</code> column, which is computed the way a pool computes it.</p>
+<h2>Automatic pool failover</h2>
+<p>On by default. If your pool refuses connections, sends no work, drops sessions or rejects many shares, the miner moves to the best working pool: your own backup pools first (in your order), then the built-in approved pools that pay the same address with the same worker. It returns when your pool recovers, without flapping. It rides through DNS blocks and resets, and can use your own SOCKS5 proxy: <code>--proxy socks5://HOST:PORT</code>. Turn it off with <code>--no-pool-failover</code>; see the ranking with <code>--pool-failover-report</code>.</p>
+<h2>Troubleshooting</h2>
+<div class="scroll"><table><tr><th>Symptom</th><th>What to do</th></tr>
+<tr><td><code>no GPU found: ...</code></td><td>The line names the cause: no NVIDIA driver, a driver older than R575+ (CUDA 12.9), a card not passed to a container, or no AMD runtime. <code>--list</code> prints the same line.</td></tr>
+<tr><td><code>pool and wallet disagree</code></td><td>Pass <code>--algo pearl</code> or <code>--algo qtc</code>.</td></tr>
+<tr><td>TLS to the pool fails</td><td>Try the address without <code>tls://</code>; some pools use a self-signed certificate.</td></tr>
+<tr><td><code>dev fee: no approved dev pool can be reached</code></td><td>Check firewall, DNS, VPN / proxy, the hosts file and ad-block lists for pool domains. Mining resumes by itself.</td></tr>
+<tr><td><code>not applied (no permission (admin/root needed))</code></td><td>Run the miner as administrator / root, or use <code>--mem-control none</code>.</td></tr>
+<tr><td>Red line: <code>Run as ADMIN for Profit Mode and Tuning</code></td><td>The miner mines normally, but the power-limit search does nothing. Start it elevated.</td></tr>
+<tr><td><code>mining paused on this card</code></td><td>The card is above <code>--panic-temp</code>. Improve cooling; it resumes 5 C below.</td></tr>
+<tr><td>Rejected shares "invalid" / "low difficulty"</td><td>The card computes wrong: lower or remove your overclock. Usual sign of an unstable core or memory overclock; the miner never changes your core clock or voltage.</td></tr>
+<tr><td>Many stale shares</td><td>High latency or a far pool region. Choose a closer endpoint.</td></tr>
+<tr><td>First share takes long</td><td>The first dev package is mined before your work; then tuning. On slow cards that can take tens of seconds.</td></tr>
+<tr><td>Output freezes on Windows</td><td>Text selection in the console pauses output. Press Esc.</td></tr>
+<tr><td>Exit code 2 with a card already in use</td><td>Run exactly one miner per card.</td></tr>
+<tr><td>Coin switching paused / power search off</td><td>The public price sources cannot be reached from your network. Mining goes on.</td></tr></table></div>
+<h2>Good to know</h2>
+<ul><li>GPU only, no CPU mining.</li>
+<li>No core clock or voltage control; the miner changes only the power limit, and the memory clock only via <code>--mem-control</code>.</li>
+<li>Tariff times use the computer's clock. HiveOS usually runs on UTC: write your zones in that clock.</li>
+<li>No ready-made HiveOS package and no HiveOS statistics integration yet.</li>
+<li>Pearl on a GTX 16xx is opt-in. CMP 90HX Pearl needs an unlocked driver.</li></ul>
+<h2 id="report">Reporting a problem</h2>
+<p>Open an issue on <a href="https://github.com/armadig/Armadig-Miner/issues">GitHub</a> and include: the output of <code>armadig-miner --version</code>; the <code>--list</code> output or the first 30 lines of a run; one console table with the DEV line and the bottom bar; the log (<code>--log armadig.log</code>) if the run lasted more than a few minutes; card model, coin, pool, driver version and operating system. <b>Do not send wallets or pool logins.</b> They are not needed.</p>
+<h2>License</h2>
+<p>Armadig is closed-source freeware: free use on your own hardware, including commercial mining. The dev fee is part of the terms and must not be removed, bypassed or redirected. No reverse engineering, modification or resale; only the complete unmodified official archive may be redistributed; no warranty.</p>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>

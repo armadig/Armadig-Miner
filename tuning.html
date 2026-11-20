@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuning - Armadig</title><meta name="description" content="One-time per-card auto-tune while mining, memory clock control and temperature protection.">
+<meta property="og:title" content="Tuning - Armadig"><meta property="og:description" content="One-time per-card auto-tune while mining, memory clock control and temperature protection.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l" href="profit.html">Profit mode</a><a class="l on" href="tuning.html">Tuning</a><a class="l" href="options.html">Options</a><a class="l" href="config.html">Config file</a><a class="l" href="cards.html">Cards</a><a class="l" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>Tuned per card</h1>
+<p class="lead">Two cards of one model often differ. Armadig finds each card's own best settings, once, while mining.</p>
+<h2>How the tune works</h2>
+<ul><li>The first time a card runs a kernel, the miner tunes it <b>while mining</b>. The console says <code>SAFE AUTO-TUNE: tuning this card once for this kernel ... mining continues</code>.</li>
+<li>Shares found during the tune count normally. Points are scored by the rate the pool would credit; a point with any error or failed self-check is thrown away.</li>
+<li>A tune is bounded: about <b>20 minutes</b> per card and kernel on the first run, usually much less. The console shows the time left.</li>
+<li>The winner must beat the built-in starting point in fresh paired measurements, otherwise the starting point is kept.</li>
+<li><b>It changes launch settings only</b>: never core clock, voltage or power limit.</li></ul>
+<div class="term"><div class="bar"><i></i><i></i><i></i>armadig-miner - first start of a card</div><pre><span class="y">SAFE AUTO-TUNE: tuning this card once for this kernel ... mining continues</span>
+SAFE AUTO-TUNING: current hashrate is not final
+  0  RTX 4060Ti  Pearl   tuning   one-time card tune ... up to 17 min left
+
+next start:
+<span class="g">SAFE AUTO-TUNE CACHED</span></pre></div><p class="cap">Console view. The numbers are illustrative, your rig will show its own.</p>
+<h2>The cache</h2>
+<p>The result is stored in <code>autotune.json</code> next to the program, so later starts use it at once. A card is tuned again automatically when a new release ships a different kernel for it, when the card's power limit changed, or when the clock watch finds the card's clock far below its reference (for example an overclock profile was removed). A new release starts from the previous release's tune and only runs a full search if a neighbour is clearly better.</p>
+<pre><code>armadig-miner.exe --autotune on       # default
+armadig-miner.exe --autotune off      # built-in starting point, no tuning
+armadig-miner.exe --autotune redo     # tune every card again now
+armadig-miner.exe --tune-cache D:\tune\autotune.json</code></pre>
+<p>To reset a tune: run once with <code>--autotune redo</code> or delete <code>autotune.json</code>.</p>
+<h2>Memory clock (NVIDIA)</h2>
+<table><tr><th><code>--mem-control</code></th><th>Effect</th></tr>
+<tr><td><code>auto</code> (default)</td><td>Built-in per-model table: for some models and coins the memory clock is locked to a measured value, for others it is left alone.</td></tr>
+<tr><td><code>none</code></td><td>The miner does not touch memory clocks. <b>Use this if you set memory clocks yourself</b> (Afterburner, nvidia-settings, HiveOS OC).</td></tr>
+<tr><td><code>MHZ</code></td><td>Lock the memory clock of all selected cards to this value.</td></tr></table>
+<p>The lock is restored at a normal exit. It needs administrator / root; without it one line says so and mining goes on. AMD on Windows: <code>--mem-control</code> has no effect.</p>
+<h2>Temperature protection</h2>
+<p>Above <code>--panic-temp</code> that card pauses until it reads 5 C below. Defaults: 90 C on NVIDIA; AMD junction temperature pauses at 105 C and resumes at 100 C. <code>--warning-temp</code> (default 76) only colours the cell yellow. Other cards keep mining. It is a safety net, not a fan controller: keep your fan curve in place.</p>
+<pre><code>armadig-miner.exe YOUR_PEARL_WALLET YOUR_QTC_WALLET --warning-temp 72 --panic-temp 85</code></pre>
+<div class="pn"><a href="profit.html">&larr; Profit mode</a><a href="options.html">Next: Options &rarr;</a></div>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>

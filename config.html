@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Config file - Armadig</title><meta name="description" content="All armadig.conf keys with examples.">
+<meta property="og:title" content="Config file - Armadig"><meta property="og:description" content="All armadig.conf keys with examples.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l" href="profit.html">Profit mode</a><a class="l" href="tuning.html">Tuning</a><a class="l" href="options.html">Options</a><a class="l on" href="config.html">Config file</a><a class="l" href="cards.html">Cards</a><a class="l" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>Config file: armadig.conf</h1>
+<p class="lead">Only a wallet is needed. Write each setting on one line, the way you like.</p>
+<h2>The shipped file</h2>
+<pre><code># armadig.conf
+wallet =
+pool = any
+tariff = 23-7 4.33, 7-23 9.63 rub   # EUR / Germany: tariff = 23-7 0.30, 7-23 0.38 eur
+psu = gold, 750w</code></pre>
+<p>Put your address after <code>wallet =</code>, set your tariff and power supply, save. Then <code>armadig-miner.exe mine</code> is enough.</p>
+<h2>A fuller example</h2>
+<pre><code>wallet = YOUR_PEARL_WALLET, YOUR_QTC_WALLET
+pool = qtc my.pool.net:7049, pearl kryptex
+worker = rig1
+tariff = 23-7 4.33, 7-23 9.63 rub
+psu = gold, 1200w
+power = auto
+power_max_loss = 10%
+fees = pool 1%, sell 0.2%
+gpu1 = qtc, my.pool.net:7049
+mem-control = none</code></pre>
+<h2>All keys</h2>
+<div class="scroll"><table><tr><th>Key</th><th>Example</th><th>What it does</th></tr>
+<tr><td><code>wallet</code></td><td><code>wallet = ADDR1, ADDR2</code></td><td>One or two payout addresses; the coin is recognised by format. Two <code>wallet</code> lines work too.</td></tr>
+<tr><td><code>pool</code></td><td><code>any</code> / <code>kryptex, herominers</code> / <code>qtc my.pool.net:7049, pearl kryptex</code></td><td><code>any</code> = fastest approved pool. Name pools, or give your own per coin.</td></tr>
+<tr><td><code>worker</code></td><td><code>worker = rig1</code></td><td>One word. Keep it neutral; pools show it publicly.</td></tr>
+<tr><td><code>tariff</code></td><td><code>23-7 4.33, 7-23 9.63 rub</code></td><td>Up to 3 zones, local time, price per kWh, currency anywhere on the line. <code>23-7</code> crosses midnight.</td></tr>
+<tr><td><code>psu</code></td><td><code>gold, 1200w</code></td><td>Power supply class and rated watts, any order, or an efficiency such as <code>92%</code>.</td></tr>
+<tr><td><code>wattmeter</code></td><td><code>346w@299w</code></td><td>Optional: your wall meter @ the GPU power sum the miner shows. More exact than <code>psu</code>.</td></tr>
+<tr><td><code>power</code></td><td><code>auto</code> / <code>efficiency</code> / <code>off</code> / <code>redo</code> / <code>80%</code> / <code>150w</code></td><td>The power-limit mode (<a href="profit.html">Profit mode</a>).</td></tr>
+<tr><td><code>power_max_loss</code></td><td><code>10%</code></td><td>Safety rail of the search, 0 to 50 %. Not a money threshold.</td></tr>
+<tr><td><code>failover</code></td><td><code>switch pool-only, 20%, 300s</code></td><td>What to do on a pool failure, the rejected + stale limit, QTC seconds without a job.</td></tr>
+<tr><td><code>fees</code></td><td><code>pool 1%, sell 0.2%</code></td><td>Pool fee and selling cost used in the net revenue.</td></tr>
+<tr><td><code>gpuN</code></td><td><code>gpu1 = qtc, my.pool.net:7049</code></td><td>Force the coin and pool of one card (index from <code>--list</code>).</td></tr>
+<tr><td>any option</td><td><code>mem-control = none</code>, <code>fixed = yes</code>, <code>gpu = 0,2</code></td><td>Any command-line option without the leading <code>--</code>.</td></tr></table></div>
+<h2>Syntax</h2>
+<ul><li>One setting per line: <code>key = value</code> or <code>key: value</code>. Keys ignore case, and <code>-</code> / <code>_</code> are the same. <code>#</code> starts a comment, also after a value.</li>
+<li>The file may be UTF-8 or, line by line, Windows-1251.</li>
+<li>The command line wins over the file. The last line of a key wins.</li>
+<li>The file is looked for next to the program, in the folder you start it from, and in the package folder above <code>windows/</code> and <code>linux/</code>. The start block names the file it uses (<code>config: &lt;path&gt;</code>).</li>
+<li>The file is re-read within a minute when you change it.</li></ul>
+<div class="note"><b>Mistakes.</b> A <code>wallet</code>, <code>pool</code>, <code>worker</code>, <code>gpuN</code>, <code>failover</code> or option line that cannot be read stops the miner with one line that names the line number and never prints your address, because those lines decide where your money goes. A mistake in a tariff, power supply, fee or other value is one note line, and the default is used.</div>
+<div class="pn"><a href="options.html">&larr; Options</a><a href="cards.html">Next: Cards &rarr;</a></div>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick start - Armadig</title><meta name="description" content="Download, check and start Armadig on Windows, Linux and HiveOS.">
+<meta property="og:title" content="Quick start - Armadig"><meta property="og:description" content="Download, check and start Armadig on Windows, Linux and HiveOS.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l on" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l" href="profit.html">Profit mode</a><a class="l" href="tuning.html">Tuning</a><a class="l" href="options.html">Options</a><a class="l" href="config.html">Config file</a><a class="l" href="cards.html">Cards</a><a class="l" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>Quick start</h1><p class="lead">From download to mining in a few minutes.</p>
+<h2>1. Download and check</h2>
+<p>Get the archive from <a href="https://github.com/armadig/Armadig-Miner/releases">Releases</a>. It holds <code>windows/armadig-miner.exe</code>, <code>linux/armadig-miner</code>, <code>armadig.conf</code>, <code>start_armadig.bat</code> and <code>SHA256SUMS.txt</code>. Check the files before you run them.</p>
+<pre><code>certutil -hashfile windows\armadig-miner.exe SHA256      (Windows, cmd)
+sha256sum -c SHA256SUMS.txt                               (Linux)</code></pre>
+<p>The result must match <code>SHA256SUMS.txt</code>. If it does not, do not run the file.</p>
+<h2>2. Requirements</h2>
+<ul><li><b>NVIDIA:</b> a driver for CUDA 12.9 or newer (R575+). No CUDA toolkit needed.</li>
+<li><b>AMD on Windows:</b> the AMD Adrenalin driver. <b>AMD on Linux:</b> the ROCm / HIP runtime and membership of the <code>video</code> or <code>render</code> group.</li>
+<li>Windows x64, or Linux x86-64 with glibc 2.17 or newer.</li>
+<li>Start the miner as administrator (Windows) or root (Linux) to use the power-limit search. Without it the miner still mines, and one red line says so.</li></ul>
+<h2>3. See your cards</h2>
+<pre><code>armadig-miner.exe --list</code></pre>
+<p>Shows each card and what would run on it. No GPU work is started.</p>
+<h2>4. Start</h2>
+<p><b>Simplest:</b> your two payout addresses, nothing else (Pearl and QTC, either order; one address mines that coin only). The miner picks the fastest approved pool for each coin and the better-paying coin for each card.</p>
+<pre><code>armadig-miner.exe YOUR_PEARL_WALLET YOUR_QTC_WALLET</code></pre>
+<p><b>One coin, your own pool:</b></p>
+<pre><code>armadig-miner.exe mine --algo pearl --pool POOL_HOST:PORT --wallet YOUR_PEARL_WALLET --worker w1
+armadig-miner.exe mine --algo qtc   --pool POOL_HOST:PORT --wallet YOUR_QTC_WALLET   --worker w1</code></pre>
+<p><b>Both coins with your own pools:</b></p>
+<pre><code>armadig-miner.exe mine --pearl-pool POOL_HOST:PORT --pearl-wallet YOUR_PEARL_WALLET ^
+  --qtc-pool POOL_HOST:PORT --qtc-wallet YOUR_QTC_WALLET --worker w1</code></pre>
+<p>Only some cards: add <code>--gpu 0</code> or <code>--gpu 0,2</code> (indexes from <code>--list</code>). Keep the worker name neutral (<code>w1</code>, <code>w2</code>): pools show it publicly.</p>
+<div class="note"><b>No wallet?</b> Started with no valid wallet anywhere, the miner runs <b>test mining for the developer</b>: all work goes to the developer, a red warning says so at the start and every 60 s. Any valid wallet turns it off at once.</div>
+<h2>5. The first run tunes each card</h2>
+<p>The first time a card runs a kernel, the miner tunes it <b>while mining</b>: at most about 20 minutes per card and kernel, usually much less. Shares found during the tune count normally. The result is cached in <code>autotune.json</code>, so later starts are instant. See <a href="tuning.html">Tuning</a>.</p>
+<h2>Launcher and config file</h2>
+<p><b>Windows:</b> open <code>start_armadig.bat</code> in Notepad, put your addresses in <code>PEARL_WALLET</code> and <code>QTC_WALLET</code> (one is enough), save, double-click. The window stays open after the miner exits.</p>
+<p><b>Config file:</b> put your address after <code>wallet =</code> in <code>armadig.conf</code>, set your tariff and power supply, and <code>armadig-miner.exe mine</code> is enough. All keys: <a href="config.html">Config file</a>.</p>
+<h2>Linux</h2>
+<pre><code>sha256sum -c SHA256SUMS.txt
+chmod +x linux/armadig-miner
+./linux/armadig-miner YOUR_PEARL_WALLET YOUR_QTC_WALLET
+# AMD: if the HIP runtime is not found
+LD_LIBRARY_PATH=/opt/rocm/lib ./linux/armadig-miner YOUR_PEARL_WALLET YOUR_QTC_WALLET</code></pre>
+<h2>HiveOS and RaveOS</h2>
+<p>The Linux program runs on HiveOS as a custom miner (no ready-made package yet). Put the binary in a custom miner folder, choose <b>Miner = Custom</b> in the Flight Sheet and write an <code>h-run.sh</code> that starts it. HiveOS statistics are not integrated: read the rate from the miner's console or a <code>--log</code> file. Use the Stop button; a hard kill can leave a memory clock lock behind, and the next start recovers it.</p>
+<pre><code>#!/usr/bin/env bash
+cd "$(dirname "$0")"
+exec ./armadig-miner mine --algo pearl --pool "$CUSTOM_URL" --wallet "$CUSTOM_WALLET" \
+  --worker "${WORKER_NAME:-w1}" --log /var/log/miner/armadig/armadig.log</code></pre>
+<p>You can also pass everything in ONE line without any file, in the flight sheet's "Extra config arguments": see the <a href="options.html#oneline">one-line form</a>.</p>
+<h2>Pool choice</h2>
+<p>Without <code>--pool</code> the miner mines on the fastest approved pool. Choose the pool region nearest to the rig: the bottom bar shows the latency as <code>pool NN ms</code>, and latency costs paid rate, more on QTC because its jobs are shorter.</p>
+<div class="pn"><span></span><a href="coins.html">Next: Coins &amp; cards &rarr;</a></div>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>

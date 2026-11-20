@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command-line options - Armadig</title><meta name="description" content="Every Armadig command-line option and the one-line form for flight sheets.">
+<meta property="og:title" content="Command-line options - Armadig"><meta property="og:description" content="Every Armadig command-line option and the one-line form for flight sheets.">
+<meta property="og:image" content="https://armadig.com/armadig-social-1280x640.png">
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"></head>
+<body><nav><div class="in"><a class="brand" href="index.html"><img src="armadig-512.png" alt="Armadig"><span>arma<span>dig</span></span></a><a class="l" href="start.html">Quick start</a><a class="l" href="coins.html">Coins &amp; cards</a><a class="l" href="profit.html">Profit mode</a><a class="l" href="tuning.html">Tuning</a><a class="l on" href="options.html">Options</a><a class="l" href="config.html">Config file</a><a class="l" href="cards.html">Cards</a><a class="l" href="faq.html">FAQ</a>
+<a class="l" href="https://github.com/armadig/Armadig-Miner">GitHub</a></div></nav>
+<main>
+<h1>Command-line options</h1>
+<p class="lead">Everything the miner accepts. In <code>armadig.conf</code> every option can be written without <code>--</code>, and the command line wins over the file.</p>
+<h2>Commands</h2>
+<pre><code>armadig-miner mine     [options]                       mine on the selected cards
+armadig-miner selftest --algo pearl|qtc [--gpu LIST]   exactness self-test, then exit
+armadig-miner bench    --algo pearl|qtc [--gpu LIST]   same gate, no hashrate
+armadig-miner --list   [--gpu LIST]                    what each card would run; no GPU work
+armadig-miner --help | --version</code></pre>
+<h2>Options</h2>
+<div class="scroll"><table>
+<tr><th>Option</th><th>Meaning</th><th>Default</th></tr>
+<tr><td><code>PEARL_ADDRESS QTC_ADDRESS</code></td><td>Bare payout addresses, no flag: the coin of each is recognised from its format, either order. Not together with <code>--wallet</code>.</td><td>-</td></tr>
+<tr><td><code>--algo pearl|qtc</code></td><td>Pin the coin. Detected from pool and wallet if omitted.</td><td>detected</td></tr>
+<tr><td><code>--pool URL</code></td><td>Pool <code>host:port</code>, or <code>tls://host:port</code>. Repeat for backup pools in your order. Or a name: <code>any</code>, <code>fastest</code>, <code>kryptex</code>, <code>luckypool</code>, <code>herominers</code>, or a comma list.</td><td>fastest approved pool</td></tr>
+<tr><td><code>--wallet ADDR</code></td><td>Payout address.</td><td>-</td></tr>
+<tr><td><code>--pearl-pool</code> <code>--pearl-wallet</code> <code>--qtc-pool</code> <code>--qtc-wallet</code></td><td>Per-coin pool and wallet (mixed rigs).</td><td>-</td></tr>
+<tr><td><code>--worker NAME</code></td><td>Worker name the pool shows. Keep it neutral.</td><td><code>w1</code></td></tr>
+<tr><td><code>--gpu LIST</code></td><td>Card indexes or unique names, comma-separated.</td><td>all</td></tr>
+<tr><td><code>--coin-map LIST</code></td><td>Force the coin of some cards: <code>0=pearl,1=qtc</code>. Forced cards never switch.</td><td>-</td></tr>
+<tr><td><code>--gpu-pool INDEX=HOST:PORT</code></td><td>Pool of one forced card. Repeatable.</td><td>pool of the coin</td></tr>
+<tr><td><code>--config FILE</code></td><td>Settings file (wallets, pool, electricity, rig).</td><td><code>armadig.conf</code> next to the program</td></tr>
+<tr><td><code>--fixed</code></td><td>No coin switching, no power-limit search, no market requests. Use it for every measurement.</td><td>automation on</td></tr>
+<tr><td><code>--power-limit PCT|W</code></td><td>One limit for every card: <code>80</code> (percent of factory) or <code>150W</code>. Never above the card's limit at start. Needs admin / root.</td><td>the card's own limit</td></tr>
+<tr><td><code>--power-search on|off|redo</code></td><td>The automatic power-limit search.</td><td><code>on</code></td></tr>
+<tr><td><code>--pool-fee PCT</code> <code>--sell-fee PCT</code></td><td>Fees used in the net revenue.</td><td>pool's own / 1; 0.2</td></tr>
+<tr><td><code>--mem-control auto|none|pin-low|MHZ</code></td><td>Memory-clock policy.</td><td><code>auto</code></td></tr>
+<tr><td><code>--autotune on|off|redo|sweep</code></td><td>Auto-tune.</td><td><code>on</code></td></tr>
+<tr><td><code>--tune-cache FILE</code></td><td>Where the per-card tune is stored.</td><td><code>autotune.json</code></td></tr>
+<tr><td><code>--no-pool-failover</code></td><td>Use only your pool list, in order.</td><td>failover on</td></tr>
+<tr><td><code>--pool-failover-report</code></td><td>Print the pool ranking table once.</td><td>off</td></tr>
+<tr><td><code>--proxy socks5://HOST:PORT</code></td><td>Connect to every pool (and market requests) through this SOCKS5 proxy.</td><td>none</td></tr>
+<tr><td><code>--ui auto|v3|classic</code> <code>--ui-interval S</code></td><td>Console view and refresh period.</td><td><code>auto</code>, 5 s</td></tr>
+<tr><td><code>--warning-temp C</code> <code>--panic-temp C</code></td><td>Yellow above C; pause that card above C until 5 C below.</td><td>76; 90 (NVIDIA)</td></tr>
+<tr><td><code>--priority idle|below|normal</code></td><td>Windows process priority. <code>normal</code> for a dedicated rig.</td><td><code>idle</code> for QTC</td></tr>
+<tr><td><code>--log FILE</code></td><td>One log file for the whole run. Without it no file is written.</td><td>no file</td></tr>
+<tr><td><code>-v</code> <code>--no-color</code></td><td>More detail on share lines; no colour.</td><td>off</td></tr>
+</table></div>
+<p>There is no option to change or redirect the dev fee. The program has no core-clock, voltage, memory-offset or fan option; it changes only the power limit.</p>
+<h2 id="oneline">One line, no config file (HiveOS / RaveOS flight sheet)</h2>
+<p>Everything <code>armadig.conf</code> holds can go on the command line in ONE line, in any order, with or without <code>--</code>. Put it into "Extra config arguments" (HiveOS) or the miner's arguments field (RaveOS). Nothing has to be written to disk.</p>
+<pre><code>armadig-miner PEARL_ADDRESS QTC_ADDRESS platinum,1200w 6.50 rub 23-07 9.65 rub 07-23</code></pre>
+<div class="scroll"><table><tr><th>You write</th><th>The miner takes it as</th></tr>
+<tr><td>A Pearl or QTC address (<code>ADDRESS.rig1</code> sets the worker name too)</td><td>the payout address of that coin</td></tr>
+<tr><td><code>any</code>, <code>fastest</code>, <code>kryptex</code>, <code>luckypool</code>, <code>herominers</code></td><td>the pool choice</td></tr>
+<tr><td><code>host:port</code>, <code>stratum+tcp://host:port</code></td><td>your pool (with two coins write <code>pearl-pool=host:port</code> or <code>qtc-pool=host:port</code>)</td></tr>
+<tr><td><code>bronze silver gold platinum titanium</code>, <code>750w</code>, <code>1.2kw</code></td><td>power supply class and rated watts</td></tr>
+<tr><td>a price <code>6.50</code>, a currency <code>rub eur usd</code> or <code>$ &euro;</code>, hours <code>23-07</code></td><td>a tariff zone (up to 3; one price with no hours = the whole day)</td></tr>
+<tr><td><code>0,1</code></td><td>the GPUs to use (<code>5 usd</code> is a price, <code>5</code> alone is GPU 5)</td></tr>
+<tr><td><code>fixed</code>, <code>power 80%</code>, <code>mem-control none</code>, <code>worker rig1</code></td><td>the same as the <code>--</code> option of that name</td></tr></table></div>
+<ul><li>The command line wins over <code>armadig.conf</code>, setting by setting. Tariffs on the command line REPLACE all tariff zones of the file.</li>
+<li>No tariff anywhere: no electricity cost is used; coins are chosen by revenue.</li>
+<li>A word the miner cannot place is shown as a plain note and ignored. A mistyped address or an unfilled <code>%WAL%</code> template is shown as a red note and <b>not used</b>; its value is never printed.</li></ul>
+<div class="pn"><a href="tuning.html">&larr; Tuning</a><a href="config.html">Next: Config file &rarr;</a></div>
+
+<footer><p>Armadig is closed-source freeware. Downloads and release notes: <a href="https://github.com/armadig/Armadig-Miner/releases">GitHub</a> &middot;
+<a href="https://t.me/armadigminer">Telegram</a> &middot; <a href="mailto:contact@armadig.com">contact@armadig.com</a></p></footer>
+</main></body></html>
